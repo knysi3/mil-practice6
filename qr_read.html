@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="jp">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://kit.fontawesome.com/b3b645e64e.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="css/my.css" rel="stylesheet">
+
+    <title>doko share</title>
+  </head>
+  <body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.js"></script>
+    <script src="./js/jsQR.js"></script>
+
+    <!-- header -->
+    <nav class="navbar navbar-light bg-light mb-3">
+      <div class="container-fluid">
+        <div class="d-flex">
+        <a href="index.html"><img src="/img/map.svg" class="mx-2" alt="" width="35" height="35"></a>
+        <a class="navbar-brand" href="index.html">どこSHARE</a>
+        </div>
+        <div class="d-flex">
+          <a class="btn btn-original mx-2" href="#" role="button">ログイン</a>
+          <a class="btn btn-original mx-2" href="#" role="button">無料登録</a>
+        </div>
+      </div>
+    </nav>
+    <!-- header -->
+
+    <!-- main -->
+    <script>
+      var video,tmp,tmp_ctx,qr,prev,prev_ctx,w,h,m,x1,y1;
+      window.addEventListener("load",function(){
+        video=document.createElement('video');
+        video.setAttribute("autoplay","");
+        video.setAttribute("muted","");
+        video.setAttribute("playsinline","");
+        video.onloadedmetadata = function(e){video.play();};
+        prev=document.getElementById("preview");
+        prev_ctx=prev.getContext("2d");
+        tmp = document.createElement('canvas');
+        tmp_ctx = tmp.getContext("2d");
+    
+        qr = document.getElementById("qr");
+        //カメラ使用の許可ダイアログが表示される
+        navigator.mediaDevices.getUserMedia(
+          //マイクはオフ, カメラの設定 できれば背面カメラ できれば640×480
+          {"audio":false,"video":{"facingMode":"environment","width":{"ideal":640},"height":{"ideal":480}}}
+        ).then( //許可された場合
+          function(stream){
+            video.srcObject = stream;
+            //0.5秒後にスキャンする
+            setTimeout(Scan,500);
+          }
+        ).catch( //許可されなかった場合
+          function(err){qr.innerHTML=qr.innerHTML+err+'\n';}
+        );
+      });
+      function Scan(){
+        //選択された幅高さ
+        w=video.videoWidth;
+        h=video.videoHeight;
+        //画面上の表示サイズ
+        prev.style.width=(w/2)+"px";
+        prev.style.height=(h/2)+"px";
+        //内部のサイズ
+        prev.setAttribute("width",w);
+        prev.setAttribute("height",h);
+        if(w>h){m=h*0.5;}else{m=w*0.5;}
+        x1=(w-m)/2;
+        y1=(h-m)/2;
+        prev_ctx.drawImage(video,0,0,w,h);
+        prev_ctx.beginPath();
+        prev_ctx.strokeStyle="rgb(255,0,0)";
+        prev_ctx.lineWidth=2;
+        prev_ctx.rect(x1,y1,m,m);
+        prev_ctx.stroke();
+        tmp.setAttribute("width",m);
+        tmp.setAttribute("height",m);
+        tmp_ctx.drawImage(prev,x1,y1,m,m,0,0,m,m);
+        let imageData = tmp_ctx.getImageData(0,0,m,m);
+        let scanResult = jsQR(imageData.data,m,m);
+        if(scanResult){
+          //QRコードをスキャンした結果を出力
+          qr.value=qr.value+scanResult.data+'\n';
+          qr.scrollTop = qr.scrollHeight;
+        }
+        setTimeout(Scan,200);
+      }
+    </script>
+    <div class="centering_item">
+      <p>ピントを合わせて、QRコードをカメラ映像の赤枠内にあわせると読み取ります</p>
+      <div><canvas id="preview"></canvas></div>
+      <textarea id="qr" rows="8" cols="40" placeholder="ここに読み込んだ結果が表示されます"></textarea>
+      <p><a class="btn btn-original" href="qr_read.html" role="button">Shareする!</a></p>
+    </div>
+   
+    <!-- Footer https://mdbootstrap.com/docs/standard/navigation/footer/ -->
+    <footer class="text-center text-lg-start bg-white text-muted">
+      <section class="">
+        <div class="container text-center text-md-start mt-5">
+          <div class="row mt-3">
+            <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+              <h6 class="text-uppercase fw-bold mb-4">
+                <i class="fas fa-gem me-3 text-secondary"></i>com-com Company
+              </h6>
+              <p class="fs-7">
+                だれもがみんなとつながるプラットフォームを提供します。
+              </p>
+            </div>
+
+            <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
+              <h6 class="fw-bold mb-4">About</h6>
+              <p><a href="#!" class="text-reset text-decoration-none fs-7">ご利用ガイド</a></p>
+              <p><a href="#!" class="text-reset text-decoration-none fs-7">利用事例の紹介</a></p>
+              <p><a href="#!" class="text-reset text-decoration-none fs-7">お知らせ</a></p>
+              <p><a href="#!" class="text-reset text-decoration-none fs-7">お問い合わせ</a></p>
+            </div>
+
+            <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+              <h6 class="fw-bold mb-4">Legal</h6>
+              <p><a href="#!" class="text-reset text-decoration-none fs-7">利用規約</a></p>
+              <p><a href="#!" class="text-reset text-decoration-none fs-7">特定商取引に基づく表記</a></p>
+              <p><a href="#!" class="text-reset text-decoration-none fs-7">プライバシーポリシー</a></p>
+              <p><a href="#!" class="text-reset text-decoration-none fs-7"></a></p>
+            </div>
+
+            <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+              <h6 class="fw-bold mb-4">Links</h6>
+              <p><i class="fa-brands fa-twitter me-2 text-secondary fs-7"></i>Twitter</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.025);">
+        <p>© 2023 Copyright</p>
+        <a class="text-reset fw-bold" href=""></a>
+      </div>
+    </footer>
+    <!-- Footer -->
+
+    <!-- JavaScript -->
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  </body>
+</html>

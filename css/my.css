@@ -1,0 +1,42 @@
+body {
+  background-color: #ffffff;    /* 背景色指定 */
+  max-width: 1200px;
+  margin: auto;
+}
+
+.fs-7 {
+  font-size: 0.9rem!important;
+}
+
+.btn-original {
+  color: #fff;
+  background-color: #45B035;
+  border-color: #45B035;
+}
+
+.index-main {
+  text-align: center;
+  background-color: #ffffff;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.centering_item {
+  text-align: center;
+  background-color: #ffffff;
+  max-width: 480px;
+  min-height: 480px;
+  margin: 0 auto;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  background-color: #312d2a;
+}
+
+.container .text-muted {
+  margin: 20px 0;
+}
